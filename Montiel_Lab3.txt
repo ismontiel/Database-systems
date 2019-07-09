@@ -1,0 +1,133 @@
+Israel Montiel
+Homework Lab 3
+
+Problem 1
+SELECT bud_num, bud_name,
+CASE bud_type
+  when 'OPS' then 'Operating'
+  when 'CAP' then 'Capital'
+  when 'EXT' then 'External'
+  else 'other'
+END "Budget Type"
+from pf_budget
+
+BUD_NUM	BUD_NAME	Budget Type
+1	Promotions	Operating
+2	Technology	Capital
+3	Research	Capital
+4	Consulting	Operating
+5	Training	Operating
+6	Services	External
+7	Marketing	Operating
+8	EBusiness	Capital
+999	Emergency	other
+
+Problem 2
+SELECT *
+from pf_dept main
+where not exists (select emp_name from pf_employee sub where emp_salary > 45000 and main.dept_num = sub.emp_dept)
+
+DEPT_NUM	DEPT_NAME	DEPT_PARENT	DEPT_MGR
+2		Sales		3		1
+3		Service		4		2
+5		Production	8		1
+8		Marketing	-		2
+
+Problem 3
+SELECT emp_name, emp_title
+from pf_employee main
+where not exists (select 1 from pf_budget b where exists (select 1 from pf_dept d where b.bud_mgr = d.dept_mgr and b.bud_mgr = main.emp_id))
+
+EMP_NAME	EMP_TITLE
+Ames,Sally	Sales Mgr
+Murphy,Eileen	Service Mgr
+Waller,David	Senior CSR
+Tierney,Pat	Legal Aide
+McDonald,Alex	CFO
+Torino,Paul	Production Mgr
+Sawyer,Michelle	TVP
+Loggins,Brian	Network Support
+Hanley,Kim	Tech Support
+Early,Alan	Research Mgr
+Torberg,Nancy	CSR
+Murphy,Mary	Production Aide
+Jones,Gary	Accountant
+Geiger,Roy	CSR
+Sullivan,Jane	Account Rep
+Ramos,Peter	Researcher
+Robertson,Mark	Production Aide
+Eden,Janice	Accountant
+Bridges,Judy	Account Rep
+Norris,Mike	DBA
+Riser,Sandy	Researcher
+Cerrino,Dan	Account Rep
+Kelly,Colleen	Tech Support
+
+Problem 4
+SELECT emp_name, emp_title
+from pf_employee main
+where exists (select 1 from pf_dept d where d.dept_mgr = main.emp_id)
+minus
+
+SELECT emp_name, emp_title
+from pf_employee main2
+where exists (select 1 from pf_budget b where b.bud_mgr = main2.emp_id)
+
+EMP_NAME	EMP_TITLE
+Tierney,Pat	Legal Aide
+
+Problem 5
+SELECT distinct man.emp_name, man.emp_title, lmao.dept_name
+from ((pf_employee man join pf_dept d on d.dept_mgr = man.emp_id) join pf_employee e on e.emp_dept = d.dept_num) join pf_dept lmao on man.emp_dept = lmao.dept_num
+group by man.emp_name, man.emp_title, d.dept_name, lmao.dept_name
+having (count(man.emp_name)-1) > 3
+
+select mgr.emp_id, mgr.emp_name, mgr.emp_title, d.dept_name, count(emp.emp_id) "manages count"
+from pf_employee mgr join pf_dept d on mgr.emp_id = d.dept_mgr
+		     join pf_employee emp on emp.emp_dept = d.dept_num 
+group by gr.emp_id, mgr.emp_name, mgr.emp_title, d.dept_name
+having count(emp.emp_id) > 3
+
+EMP_NAME	EMP_TITLE	DEPT_NAME
+Jones,Ed	President	Executive
+
+Problem 6
+select d.dept_name, count(proj_id) "Num proj managed"
+from (pf_dept d left outer join pf_employee e on d.dept_num = e.emp_dept) left outer join pf_project p on p.proj_mgr = e.emp_id
+group by d.dept_name
+
+DEPT_NAME	Num proj managed
+Research	1
+Executive	1
+InfoTech	5
+Sales		2
+Finance		0
+Production	0
+Marketing	0
+Service		1
+
+Problem 7
+select p.proj_title, to_char(proj_start, 'Day MM/DD/YYYY HH:MI') "Project Start"
+from pf_project p
+where to_char(proj_start, 'd') = '2' or to_char(proj_start, 'd') = '6'
+
+PROJ_TITLE	Project Start
+New Storage	Friday 02/08/2019 04:57
+CRM Training	Friday 12/21/2018 04:57
+Inventory Mgmt	Friday 01/25/2019 04:57
+Help Desk Updt	Monday 02/04/2019 04:57
+
+Problem 8
+select *
+from pf_employee main
+where main.emp_salary = (select min(sub.emp_salary) from pf_employee sub where sub.emp_dept = main.emp_dept)
+order by emp_dept
+
+EMP_ID	EMP_NAME	EMP_GENDER	EMP_TITLE	EMP_START	EMP_DEPT	EMP_SALARY
+2	Smith,Linda	F	Vice President		10/27/2016	1		51000
+24	Cerrino,Dan	M	Account Rep		08/18/2018	2		36000
+16	Geiger,Roy	M	CSR			12/31/2017	3		30500
+15	Jones,Gary	M	Accountant		03/01/2017	4		33000
+19	Robertson,Mark	M	Production Aide		01/20/2018	5		29000
+25	Kelly,Colleen	F	Tech Support		09/07/2018	6		42500
+23	Riser,Sandy	F	Researcher		03/31/2018	7		28000

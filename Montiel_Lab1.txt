@@ -1,0 +1,123 @@
+Database Lab 1
+Israel Montiel
+
+	Question 1
+select EMP_NAME, EMP_TITLE, EMP_SALARY
+from PF_EMPLOYEE
+where EMP_DEPT=4
+order by EMP_SALARY DESC;
+
+EMP_NAME	EMP_TITLE	EMP_SALARY
+McDonald,Alex	CFO		49000
+Torino,Paul	Production Mgr	48500
+Tierney,Pat	Legal Aide	41500
+Eden,Janice	Accountant	35000
+Jones,Gary	Accountant	33000
+
+	Question 2
+select count(*)
+from PF_EMPLOYEE
+where EMP_SALARY > 35000 and EMP_DEPT = 3;
+
+COUNT(*)
+2
+
+Yes, some people in department 3 make more than $35,000
+
+	Question 3
+select upper(substr(EMP_NAME, 1, instr(EMP_NAME, ',')-1)) "Employee Last Name", EMP_DEPT, EMP_NAME
+from PF_EMPLOYEE
+where EMP_DEPT in (2, 4, 6)
+order by EMP_DEPT, EMP_NAME;
+
+Employee Last Name	EMP_DEPT	EMP_NAME
+AMES			2		Ames,Sally
+BRIDGES			2		Bridges,Judy
+CERRINO			2		Cerrino,Dan
+SULLIVAN		2		Sullivan,Jane
+EDEN			4		Eden,Janice
+JONES			4		Jones,Gary
+MCDONALD		4		McDonald,Alex
+TIERNEY			4		Tierney,Pat
+TORINO			4		Torino,Paul
+HANLEY			6		Hanley,Kim
+KELLY			6		Kelly,Colleen
+LOGGINS			6		Loggins,Brian
+NORRIS			6		Norris,Mike
+SAWYER			6		Sawyer,Michelle
+
+	Question 4
+select PROJ_TITLE, proj_start, proj_end
+from PF_PROJECT
+where PROJ_START < SYSDATE and PROJ_END is null;
+
+PROJ_TITLE	PROJ_START	PROJ_END
+New Storage	02/04/2019	-
+CRM Training	12/17/2018	-
+PurCard Linkage	02/02/2019	-
+SAN Install	02/10/2019	-
+
+	Question 5
+select BUD_NAME
+from PF_BUDGET
+where BUD_AMT_ORIG > BUD_AMT_AVAIL;
+
+no data found
+
+	Question 6
+select EMP_NAME, EMP_TITLE
+from PF_EMPLOYEE
+where upper(EMP_TITLE) like '%RESEARCH%'
+
+EMP_NAME	EMP_TITLE
+Early,Alan	Research Mgr
+Ramos,Peter	Researcher
+Riser,Sandy	Researcher
+
+	Question 7
+select EMP_TITLE
+from PF_EMPLOYEE
+where length(EMP_TITLE) = 3 and upper(EMP_TITLE) = EMP_TITLE;
+
+EMP_TITLE
+CFO
+TVP
+CSR
+CSR
+DBA
+
+	Question 8
+insert into PF_EMPLOYEE values (pf_seq.nextval, 'Montiel,Israel', 'M', 'Student', SYSDATE, 1, 10);
+select *
+from PF_EMPLOYEE
+where EMP_NAME='Montiel,Israel';
+
+EMP_ID	EMP_NAME	EMP_GENDER	EMP_TITLE	EMP_START	EMP_DEPT	EMP_SALARY
+121	Montiel,Israel	M		Student		02/10/2019	1		10
+
+	Question 9
+select EMP_DEPT, sum(EMP_SALARY)
+from PF_EMPLOYEE
+group by EMP_DEPT
+order by EMP_DEPT;
+
+EMP_DEPT	SUM(EMP_SALARY)
+1		105000
+2		157500
+3		142000
+4		207000
+5		61500
+6		229500
+7		105000
+
+	Question 10
+select EMP_DEPT, count(EMP_ID)
+from PF_EMPLOYEE
+group by EMP_DEPT
+having count(EMP_ID) > 3;
+
+EMP_DEPT	COUNT(EMP_ID)
+6		5
+2		4
+4		5
+3		4

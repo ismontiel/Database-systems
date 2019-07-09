@@ -1,0 +1,80 @@
+Israel Montiel
+Homework Lab 5
+
+-Problem 1
+select doc.id, doc.name, max(contagion)
+from (patient p join disease d on p.dis_code = d.dis_code) right outer join doctor doc on p.doctor = doc.id
+group by doc.id, doc.name
+
+ID	NAME	MAX(CONTAGION)
+104	Hunnicut,Mike	5
+107	Blake,Peter	0
+106	Kildare,Richard	-
+108	Vernelli,Sue	4
+102	Zorba,John	0
+103	Casey,Ben	4
+101	Welby.Marcus	5
+105	Pierce,Ben	3
+
+-Problem 2
+select doc.name as Doctor, count(p.id)
+from (doctor doc left outer join patient p on doc.id = p.doctor) left outer join disease d on p.dis_code = d.dis_code
+where d.contagion > 0
+group by doc.name
+
+DOCTOR	COUNT(P.ID)
+Welby.Marcus	1
+Pierce,Ben	1
+Casey,Ben	1
+Vernelli,Sue	1
+Hunnicut,Mike	4
+
+-Problem 3
+select p.med_ins, avg(nvl(p.release_dt, sysdate) - admit_dt) as avg_days_relased
+from patient p
+group by p.med_ins
+
+MED_INS	AVG_DAYS_RELASED
+Harvard		29.098169849537037037037037037037037037
+United		43.1570717592592592592592592592592592593
+BCBS		16.0523572530864197530864197530864197531
+Medicare	22.0785358796296296296296296296296296296
+
+-Problem 4
+select d.name
+from patient p join disease d on d.dis_code = p.dis_code
+Minus 
+Select d.name
+from patient p join disease d on d.dis_code = p.dis_code
+where contagion < 1
+Minus
+select d.name
+from patient p join disease d on d.dis_code = p.dis_code
+where p.release_dt is null
+
+NAME
+Immune Deficiency
+
+-Problem 5
+select d.dis_code, d.name, d.contagion, count(p.id)
+from patient p join disease d on d.dis_code = p.dis_code
+group by d.name, d.dis_code, d.contagion
+having count(p.id) > 3
+
+DIS_CODE	NAME	CONTAGION	COUNT(P.ID)
+HEP		Hepatitis	5	4
+
+-Problem 6
+LAST_NAME	FIRST_NAME
+Chalice		Mike
+Driver		Megan
+Earheart	Peter
+Garrison	Joe
+Johnson		Gary
+Kilroy		Heather
+Lawrence	Tom
+Nestor		Steve
+Peterson	John
+Quebec		Pierre
+Stone		Pete
+Talbot		Fred

@@ -1,0 +1,50 @@
+Lab 4-V2
+
+Problem 1:
+select p.id, p.name
+from patient p join disease d on p.dis_code = d.code
+where d.contagion > 0
+order by d.contagion DESC, p.name
+
+Problem 2:
+select p.med_ins, min(p.bill_amt), max(p.bill_amt), avg(p.bill_amt), (max(p.bill_amt) - min(p.bill_amt)) 
+from patient p
+group by p.med_ins
+
+Problem 3:
+select substr(p.room_code, 1, 1), count(p.id)
+from patient p
+where (p.admit_dt < sysdate-7) and (p.release_dt > sysdate-7 or p.release_dt is null)
+group by substr(p.room_code, 1, 1)
+
+Problem 4:
+select 'Patient', p.name
+from patient p 
+where upper(p.dis_code) like 'HIV'
+UNION
+select 'Doctor', doc.name
+from doctor doc join expertise e on doc.id = e.id
+where upper(e.disease) like 'HIV'
+order by 2
+
+Problem 5:
+select d.name, d.contagion, count(p.id)
+from patient p join disease d on p.dis_code = d.code
+where d.name like '%itis'
+group by d.name, d.contagion
+
+Problem 6:
+select d.name, count(p.id), sum(p.bill_amt)
+from disease d left outer join patient p on p.dis_code = d.code
+group by d.name
+
+Problem 7:
+select p.name, to_char(p.admit_dt, 'Day')
+from patient p
+where length(substr(p.name, 1, instr(p.name, ','))) > 7
+
+Problem 8:
+select d.name, count(p.id)
+from disease d left outer join patient p on p.dis_code = d.code
+group by d.name
+having count(p.id) = 0

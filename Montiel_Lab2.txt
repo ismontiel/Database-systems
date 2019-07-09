@@ -1,0 +1,176 @@
+Israel Montiel
+Lab #2
+
+-Problem 1
+select e.emp_name, e.emp_title, d.dept_name
+from pf_employee e join pf_dept d on d.dept_num = e.emp_dept
+order by d.dept_num, e.emp_name
+
+EMP_NAME	EMP_TITLE	DEPT_NAME
+Jones,Ed	President	Executive
+Smith,Linda	Vice President	Executive
+Ames,Sally	Sales Mgr	Sales
+Bridges,Judy	Account Rep	Sales
+Cerrino,Dan	Account Rep	Sales
+Sullivan,Jane	Account Rep	Sales
+Geiger,Roy	CSR		Service
+Murphy,Eileen	Service Mgr	Service
+Torberg,Nancy	CSR		Service
+Waller,David	Senior CSR	Service
+
+-Problem 2
+select emp_dept, min(emp_salary), max(emp_salary), avg(emp_salary), count(*)
+from pf_employee
+group by emp_dept
+
+EMP_DEPT	MIN(EMP_SALARY)	MAX(EMP_SALARY)	AVG(EMP_SALARY)	COUNT(*)
+1		51000		54000		52500		2
+6		42500		51000		45900		5
+2		36000		45000		39375		4
+4		33000		49000		41400		5
+5		29000		32500		30750		2
+3		30500		44000		35500		4
+7		28000		47500		35000		3
+
+-Problem 3
+select emp_dept, sum(emp_salary)
+from pf_employee
+group by emp_dept
+having 80000 < sum(emp_salary)
+order by 2 desc
+
+EMP_DEPT	SUM(EMP_SALARY)
+6		229500
+4		207000
+2		157500
+3		142000
+1		105000
+7		105000
+
+-Problem 4
+select e.emp_name, e.emp_dept, sum(b.bud_amt_avail)
+from pf_employee e join pf_budget b on b.bud_mgr = e.emp_id
+group by e.emp_name, e.emp_dept
+
+EMP_NAME	EMP_DEPT	SUM(B.BUD_AMT_AVAIL)
+Sawyer,Michelle	6		125000
+Smith,Linda	1		140000
+Ames,Sally	2		95000
+Early,Alan	7		115000
+Jones,Ed	1		0
+
+-Problem 5
+select p.proj_id, p.proj_title, e.emp_name, e.emp_salary
+from pf_employee e join pf_project p on p.proj_mgr = e.emp_id
+where e.emp_salary > 40000
+
+PROJ_ID	PROJ_TITLE	EMP_NAME	EMP_SALARY
+3	New Storage	Smith,Linda	51000
+4	CRM Training	Murphy,Eileen	44000
+10	SAN Install	Sawyer,Michelle	51000
+1	LAN Upgrade	Loggins,Brian	43500
+8	Win2000 Upgrade	Hanley,Kim	44000
+2	DBMS Upgrade	Hanley,Kim	44000
+7	PurCard Linkage	Early,Alan	47500
+9	Updt Web Srvrs	Kelly,Colleen	42500
+
+-Problem 6
+select p.proj_id, p.proj_title
+from pf_project p
+where 40000 < (select emp_salary from pf_employee where emp_id = p.proj_mgr)
+
+PROJ_ID	PROJ_TITLE
+1	LAN Upgrade
+2	DBMS Upgrade
+3	New Storage
+4	CRM Training
+7	PurCard Linkage
+8	Win2000 Upgrade
+9	Updt Web Srvrs
+10	SAN Install
+
+-Problem 7
+select e.emp_name, e.emp_title
+from pf_employee e join pf_project p on e.emp_id = p.proj_mgr
+where p.proj_start >= (sysdate-30) and p.proj_start <= sysdate
+
+EMP_NAME	EMP_TITLE
+Smith,Linda	Vice President
+Sawyer,Michelle	TVP
+Early,Alan	Research Mgr
+Sullivan,Jane	Account Rep
+Sullivan,Jane	Account Rep
+
+-Problem 8
+select e.emp_name, e.emp_title, d.dept_name
+from pf_employee e join pf_dept d on d.dept_num = e.emp_dept
+where e.emp_id IN (select b.bud_mgr from pf_budget b where e.emp_id = b.bud_mgr) and e.emp_id IN (select p.proj_mgr from pf_project p where e.emp_id = p.proj_mgr)
+
+EMP_NAME	EMP_TITLE	DEPT_NAME
+Sawyer,Michelle	TVP		InfoTech
+Early,Alan	Research Mgr	Research
+Smith,Linda	Vice President	Executive
+
+-Problem 9
+select e.emp_id, e.emp_name, count(p.proj_mgr)
+from pf_employee e left outer join pf_project p on p.proj_mgr = e.emp_id
+group by e.emp_id, e.emp_name
+order by count(p.proj_mgr) desc, e.emp_name
+
+EMP_ID	EMP_NAME	COUNT(P.PROJ_MGR)
+11	Hanley,Kim	2
+17	Sullivan,Jane	2
+12	Early,Alan	1
+25	Kelly,Colleen	1
+10	Loggins,Brian	1
+4	Murphy,Eileen	1
+9	Sawyer,Michelle	1
+2	Smith,Linda	1
+3	Ames,Sally	0
+21	Bridges,Judy	0
+24	Cerrino,Dan	0
+20	Eden,Janice	0
+16	Geiger,Roy	0
+1	Jones,Ed	0
+15	Jones,Gary	0
+7	McDonald,Alex	0
+14	Murphy,Mary	0
+22	Norris,Mike	0
+18	Ramos,Peter	0
+23	Riser,Sandy	0
+19	Robertson,Mark	0
+6	Tierney,Pat	0
+13	Torberg,Nancy	0
+8	Torino,Paul	0
+5	Waller,David	0
+
+-Problem 10
+select emp.emp_name, mgr.emp_name, (emp.emp_salary-mgr.emp_salary) "Diff EMP salary and MGR salary"
+from (pf_employee emp join pf_dept d on emp.emp_dept = d.dept_num) join pf_employee mgr on d.dept_mgr = mgr.emp_id
+
+EMP_NAME	EMP_NAME	Diff EMP salary and MGR salary
+Jones,Ed	Jones,Ed	0
+Smith,Linda	Jones,Ed	-3000
+Ames,Sally	Jones,Ed	-9000
+Murphy,Eileen	Smith,Linda	-7000
+Waller,David	Smith,Linda	-14500
+Tierney,Pat	Jones,Ed	-12500
+McDonald,Alex	Jones,Ed	-5000
+Torino,Paul	Jones,Ed	-5500
+Sawyer,Michelle	Jones,Ed	-3000
+Loggins,Brian	Jones,Ed	-10500
+Hanley,Kim	Jones,Ed	-10000
+Early,Alan	Tierney,Pat	6000
+Torberg,Nancy	Smith,Linda	-20000
+Murphy,Mary	Jones,Ed	-21500
+Jones,Gary	Jones,Ed	-21000
+Geiger,Roy	Smith,Linda	-20500
+Sullivan,Jane	Jones,Ed	-17000
+Ramos,Peter	Tierney,Pat	-12000
+Robertson,Mark	Jones,Ed	-25000
+Eden,Janice	Jones,Ed	-19000
+Bridges,Judy	Jones,Ed	-14500
+Norris,Mike	Jones,Ed	-5500
+Riser,Sandy	Tierney,Pat	-13500
+Cerrino,Dan	Jones,Ed	-18000
+Kelly,Colleen	Jones,Ed	-11500

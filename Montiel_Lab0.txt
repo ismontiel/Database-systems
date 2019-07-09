@@ -1,0 +1,52 @@
+Database Lab 0
+Israel Montiel
+
+Command 1-
+select * from pf_budget;
+
+BUD_NUM	BUD_TYPE	BUD_MGR	BUD_AMT_ORIG	BUD_AMT_AVAIL	BUD_NAME
+1	OPS	3	50000	50000	Promotions
+2	CAP	9	75000	75000	Technology
+3	CAP	12	40000	40000	Research
+4	OPS	2	60000	60000	Consulting
+5	OPS	2	80000	80000	Training
+6	EXT	9	50000	50000	Services
+7	OPS	3	45000	45000	Marketing
+8	CAP	12	75000	75000	EBusiness
+999	-	1	0	0	Emergency
+
+Command 2-
+select emp_name, emp_title, emp_salary from pf_employee
+where emp_dept=4
+order by emp_salary DESC;
+
+EMP_NAME	EMP_TITLE	EMP_SALARY
+McDonald,Alex	CFO	49000
+Torino,Paul	Production Mgr	48500
+Tierney,Pat	Legal Aide	41500
+Eden,Janice	Accountant	35000
+Jones,Gary	Accountant	33000
+
+Command 3-
+select emp_name, emp_title from pf_employee
+where emp_dept=3 and emp_salary > 35000;
+
+EMP_NAME	EMP_TITLE
+Murphy,Eileen	Service Mgr
+Waller,David	Senior CSR
+
+Command 4-
+select bud_name, bud_amt_avail from pf_budget
+order by bud_name;
+
+
+BUD_NAME	BUD_AMT_AVAIL
+Consulting	60000
+EBusiness	75000
+Emergency	0
+Marketing	45000
+Promotions	50000
+Research	40000
+Services	50000
+Technology	75000
+Training	80000
